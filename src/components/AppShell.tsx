@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { logout } from "@/app/actions/auth";
 import {
   IconHome,
   IconBuilding,
@@ -69,6 +70,10 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
 
+  if (pathname === "/login") {
+    return <>{children}</>;
+  }
+
   return (
     <div className="flex min-h-screen bg-slate-50">
       <aside className="hidden w-64 shrink-0 flex-col border-r border-slate-200 bg-white md:flex">
@@ -78,7 +83,17 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         <div className="flex flex-1 flex-col py-4">
           <NavLinks pathname={pathname} />
         </div>
-        <div className="border-t border-slate-200 p-4 text-xs text-slate-400">Equipo de Psicopedagogía</div>
+        <div className="border-t border-slate-200 p-4">
+          <p className="mb-2 text-xs text-slate-400">Equipo de Psicopedagogía</p>
+          <form action={logout}>
+            <button
+              type="submit"
+              className="text-xs font-medium text-slate-500 hover:text-slate-700"
+            >
+              Cerrar sesión
+            </button>
+          </form>
+        </div>
       </aside>
 
       <div className="flex min-w-0 flex-1 flex-col">
