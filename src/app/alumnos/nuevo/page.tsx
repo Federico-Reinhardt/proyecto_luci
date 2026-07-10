@@ -1,15 +1,14 @@
 import { PageHeader } from "@/components/ui";
+import { listInstituciones } from "@/db/queries";
 import AlumnoForm from "@/app/alumnos/_components/AlumnoForm";
 
-export default function NuevoAlumnoPage() {
+export default async function NuevoAlumnoPage() {
+  const instituciones = await listInstituciones();
+
   return (
     <div>
-      <PageHeader
-        backHref="/alumnos"
-        title="Nuevo alumno"
-        description="Cargá la ficha del alumno. (Prototipo visual: no se guarda información todavía.)"
-      />
-      <AlumnoForm />
+      <PageHeader backHref="/alumnos" title="Nuevo alumno" description="Cargá la ficha del alumno." />
+      <AlumnoForm instituciones={instituciones} />
     </div>
   );
 }

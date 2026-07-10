@@ -1,17 +1,19 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { PageHeader, Card, Badge, InfoField, EmptyState, SectionTitle } from "@/components/ui";
-import { getAlumno, getInstitucion, intervencionesDeAlumno } from "@/data/mock";
+import { getAlumno, getInstitucion, intervencionesDeAlumno } from "@/db/queries";
 import { formatFecha, calcularEdad } from "@/lib/format";
 import { colorSituacionEscolar, colorEstadoIntervencion } from "@/lib/badges";
 
 export default async function AlumnoFichaPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const alumno = getAlumno(id);
+  const alumno = await getAlumno(id);
   if (!alumno) notFound();
 
-  const institucion = getInstitucion(alumno.institucionId);
-  const historial = intervencionesDeAlumno(alumno.id).sort((a, b) => b.fecha.localeCompare(a.fecha));
+  const [institucion, historial] = await Promise.all([
+    getInstitucion(alumno.institucionId),
+    intervencionesDeAlumno(alumno.id),
+  ]);
 
   return (
     <div>

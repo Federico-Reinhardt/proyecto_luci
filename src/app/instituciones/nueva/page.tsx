@@ -7,7 +7,7 @@ export default function NuevaInstitucionPage() {
       <PageHeader
         backHref="/instituciones"
         title="Nueva institución"
-        description="Cargá los datos de la institución. (Prototipo visual: no se guarda información todavía.)"
+        description="Cargá los datos de la institución."
       />
       <InstitucionForm />
     </div>

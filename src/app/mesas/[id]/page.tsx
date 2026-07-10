@@ -1,18 +1,20 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { PageHeader, Card, Badge, InfoField, EmptyState } from "@/components/ui";
-import { getMesa, getInstitucion, alumnosDeInstitucion, intervencionesDeInstitucion } from "@/data/mock";
+import { getMesa, getInstitucion, alumnosDeInstitucion, intervencionesDeInstitucion } from "@/db/queries";
 import { formatFecha } from "@/lib/format";
 import { colorEstadoMesa, colorEstadoIntervencion, colorSituacionEscolar } from "@/lib/badges";
 
 export default async function MesaDetallePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const mesa = getMesa(id);
+  const mesa = await getMesa(id);
   if (!mesa) notFound();
 
-  const institucion = getInstitucion(mesa.institucionId);
-  const alumnos = alumnosDeInstitucion(mesa.institucionId);
-  const intervenciones = intervencionesDeInstitucion(mesa.institucionId);
+  const institucion = await getInstitucion(mesa.institucionId);
+  const [alumnos, intervenciones] = await Promise.all([
+    alumnosDeInstitucion(mesa.institucionId),
+    intervencionesDeInstitucion(mesa.institucionId),
+  ]);
 
   return (
     <div>

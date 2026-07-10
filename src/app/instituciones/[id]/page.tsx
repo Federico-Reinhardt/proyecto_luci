@@ -6,18 +6,20 @@ import {
   mesasDeInstitucion,
   alumnosDeInstitucion,
   intervencionesDeInstitucion,
-} from "@/data/mock";
+} from "@/db/queries";
 import { formatFecha } from "@/lib/format";
 import { colorEstadoMesa, colorEstadoIntervencion, colorSituacionEscolar } from "@/lib/badges";
 
 export default async function InstitucionDetallePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const institucion = getInstitucion(id);
+  const institucion = await getInstitucion(id);
   if (!institucion) notFound();
 
-  const mesas = mesasDeInstitucion(institucion.id).sort((a, b) => b.fecha.localeCompare(a.fecha));
-  const alumnos = alumnosDeInstitucion(institucion.id);
-  const intervenciones = intervencionesDeInstitucion(institucion.id).sort((a, b) => b.fecha.localeCompare(a.fecha));
+  const [mesas, alumnos, intervenciones] = await Promise.all([
+    mesasDeInstitucion(institucion.id),
+    alumnosDeInstitucion(institucion.id),
+    intervencionesDeInstitucion(institucion.id),
+  ]);
 
   return (
     <div>

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { IconArrowLeft } from "@/components/icons";
+import DeleteButton from "@/components/DeleteButton";
 
 export type BadgeColor = "slate" | "green" | "amber" | "red" | "blue" | "gray";
 
@@ -129,15 +130,30 @@ export function FormField({
 export const fieldClass =
   "w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500";
 
-export function FormActions({ cancelHref }: { cancelHref: string }) {
+export function FormActions({
+  cancelHref,
+  onDelete,
+  deleteConfirmMessage,
+}: {
+  cancelHref: string;
+  onDelete?: () => Promise<{ error?: string } | void>;
+  deleteConfirmMessage?: string;
+}) {
   return (
-    <div className="mt-6 flex items-center justify-end gap-3 border-t border-slate-100 pt-5">
-      <Link href={cancelHref} className="rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">
-        Cancelar
-      </Link>
-      <button type="submit" className="rounded-lg bg-teal-600 px-4 py-2 text-sm font-medium text-white hover:bg-teal-700">
-        Guardar
-      </button>
+    <div className="mt-6 flex items-center justify-between gap-3 border-t border-slate-100 pt-5">
+      <div>
+        {onDelete && (
+          <DeleteButton action={onDelete} confirmMessage={deleteConfirmMessage ?? "¿Seguro que querés borrar este registro?"} />
+        )}
+      </div>
+      <div className="flex items-center gap-3">
+        <Link href={cancelHref} className="rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">
+          Cancelar
+        </Link>
+        <button type="submit" className="rounded-lg bg-teal-600 px-4 py-2 text-sm font-medium text-white hover:bg-teal-700">
+          Guardar
+        </button>
+      </div>
     </div>
   );
 }

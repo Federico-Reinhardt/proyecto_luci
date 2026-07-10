@@ -1,17 +1,19 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { PageHeader, Card, Badge, InfoField } from "@/components/ui";
-import { getIntervencion, getAlumno, getInstitucion } from "@/data/mock";
+import { getIntervencion, getAlumno, getInstitucion } from "@/db/queries";
 import { formatFecha } from "@/lib/format";
 import { colorEstadoIntervencion } from "@/lib/badges";
 
 export default async function IntervencionDetallePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const intervencion = getIntervencion(id);
+  const intervencion = await getIntervencion(id);
   if (!intervencion) notFound();
 
-  const alumno = getAlumno(intervencion.alumnoId);
-  const institucion = getInstitucion(intervencion.institucionId);
+  const [alumno, institucion] = await Promise.all([
+    getAlumno(intervencion.alumnoId),
+    getInstitucion(intervencion.institucionId),
+  ]);
 
   return (
     <div>

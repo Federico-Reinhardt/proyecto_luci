@@ -1,14 +1,23 @@
 import Link from "next/link";
 import { PageHeader, Card, Badge, EmptyState, StatCard } from "@/components/ui";
 import { IconBuilding, IconMeeting, IconUsers, IconClipboard } from "@/components/icons";
-import { instituciones, mesas, alumnos, intervenciones, getInstitucion, getAlumno } from "@/data/mock";
+import { listInstituciones, listMesas, listAlumnos, listIntervenciones } from "@/db/queries";
 import { formatFecha } from "@/lib/format";
 import { colorEstadoMesa } from "@/lib/badges";
 
 const BIMESTRE_ACTUAL = 4;
 const ANIO_ACTUAL = 2026;
 
-export default function DashboardPage() {
+export default async function DashboardPage() {
+  const [instituciones, mesas, alumnos, intervenciones] = await Promise.all([
+    listInstituciones(),
+    listMesas(),
+    listAlumnos(),
+    listIntervenciones(),
+  ]);
+  const getInstitucion = (id: string) => instituciones.find((i) => i.id === id);
+  const getAlumno = (id: string) => alumnos.find((a) => a.id === id);
+
   const mesasBimestre = mesas.filter((m) => m.anioLectivo === ANIO_ACTUAL && m.bimestre === BIMESTRE_ACTUAL);
   const alumnosActivos = alumnos.filter((a) => a.situacionEscolar !== "Desescolarizado");
   const intervencionesAbiertas = intervenciones.filter((i) => i.estado !== "Cerrada");

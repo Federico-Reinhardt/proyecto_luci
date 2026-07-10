@@ -1,4 +1,4 @@
-import type { EstadoMesa, EstadoIntervencion, SituacionEscolar } from "@/data/mock";
+import type { EstadoMesa, EstadoIntervencion, SituacionEscolar } from "@/db/schema";
 import type { BadgeColor } from "@/components/ui";
 
 export function colorEstadoMesa(estado: EstadoMesa): BadgeColor {
