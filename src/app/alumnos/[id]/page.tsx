@@ -1,7 +1,9 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { PageHeader, Card, Badge, InfoField, EmptyState, SectionTitle } from "@/components/ui";
+import DeleteButton from "@/components/DeleteButton";
 import { getAlumno, getInstitucion, intervencionesDeAlumno } from "@/db/queries";
+import { deleteAlumno } from "@/app/alumnos/actions";
 import { formatFecha, calcularEdad } from "@/lib/format";
 import { colorSituacionEscolar, colorEstadoIntervencion } from "@/lib/badges";
 
@@ -30,6 +32,10 @@ export default async function AlumnoFichaPage({ params }: { params: Promise<{ id
             >
               Editar
             </Link>
+            <DeleteButton
+              action={deleteAlumno.bind(null, alumno.id)}
+              confirmMessage="¿Seguro que querés borrar este alumno? También se borran sus intervenciones. No se puede deshacer."
+            />
           </>
         }
       />

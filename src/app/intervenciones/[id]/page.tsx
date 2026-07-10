@@ -1,7 +1,9 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { PageHeader, Card, Badge, InfoField } from "@/components/ui";
+import DeleteButton from "@/components/DeleteButton";
 import { getIntervencion, getAlumno, getInstitucion } from "@/db/queries";
+import { deleteIntervencion } from "@/app/intervenciones/actions";
 import { formatFecha } from "@/lib/format";
 import { colorEstadoIntervencion } from "@/lib/badges";
 
@@ -30,6 +32,10 @@ export default async function IntervencionDetallePage({ params }: { params: Prom
             >
               Editar
             </Link>
+            <DeleteButton
+              action={deleteIntervencion.bind(null, intervencion.id)}
+              confirmMessage="¿Seguro que querés borrar esta intervención? No se puede deshacer."
+            />
           </>
         }
       />

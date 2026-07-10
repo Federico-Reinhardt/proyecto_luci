@@ -1,12 +1,14 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { PageHeader, Card, Badge, InfoField, EmptyState } from "@/components/ui";
+import DeleteButton from "@/components/DeleteButton";
 import {
   getInstitucion,
   mesasDeInstitucion,
   alumnosDeInstitucion,
   intervencionesDeInstitucion,
 } from "@/db/queries";
+import { deleteInstitucion } from "@/app/instituciones/actions";
 import { formatFecha } from "@/lib/format";
 import { colorEstadoMesa, colorEstadoIntervencion, colorSituacionEscolar } from "@/lib/badges";
 
@@ -28,12 +30,18 @@ export default async function InstitucionDetallePage({ params }: { params: Promi
         title={institucion.nombre}
         description={`${institucion.tipo} · ${institucion.nivel}`}
         actions={
-          <Link
-            href={`/instituciones/${institucion.id}/editar`}
-            className="rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
-          >
-            Editar
-          </Link>
+          <>
+            <Link
+              href={`/instituciones/${institucion.id}/editar`}
+              className="rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+            >
+              Editar
+            </Link>
+            <DeleteButton
+              action={deleteInstitucion.bind(null, institucion.id)}
+              confirmMessage="¿Seguro que querés borrar esta institución? No se puede deshacer."
+            />
+          </>
         }
       />
 

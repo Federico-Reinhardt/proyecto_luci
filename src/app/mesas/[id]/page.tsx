@@ -1,7 +1,9 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { PageHeader, Card, Badge, InfoField, EmptyState } from "@/components/ui";
+import DeleteButton from "@/components/DeleteButton";
 import { getMesa, getInstitucion, alumnosDeInstitucion, intervencionesDeInstitucion } from "@/db/queries";
+import { deleteMesa } from "@/app/mesas/actions";
 import { formatFecha } from "@/lib/format";
 import { colorEstadoMesa, colorEstadoIntervencion, colorSituacionEscolar } from "@/lib/badges";
 
@@ -31,6 +33,10 @@ export default async function MesaDetallePage({ params }: { params: Promise<{ id
             >
               Editar
             </Link>
+            <DeleteButton
+              action={deleteMesa.bind(null, mesa.id)}
+              confirmMessage="¿Seguro que querés borrar esta mesa? No se puede deshacer."
+            />
           </>
         }
       />
