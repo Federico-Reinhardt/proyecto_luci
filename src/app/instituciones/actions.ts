@@ -2,6 +2,7 @@
 
 import { eq } from "drizzle-orm";
 import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
 import { db } from "@/db";
 import { instituciones, mesas, alumnos, intervenciones } from "@/db/schema";
 import type { TipoInstitucion } from "@/db/schema";
@@ -28,6 +29,7 @@ export async function createInstitucion(_state: ActionState, formData: FormData)
     return { error: "Nombre y tipo son obligatorios." };
   }
   const [row] = await db.insert(instituciones).values(values).returning({ id: instituciones.id });
+  revalidatePath("/", "layout");
   redirect(`/instituciones/${row.id}`);
 }
 
@@ -37,6 +39,7 @@ export async function updateInstitucion(id: string, _state: ActionState, formDat
     return { error: "Nombre y tipo son obligatorios." };
   }
   await db.update(instituciones).set(values).where(eq(instituciones.id, id));
+  revalidatePath("/", "layout");
   redirect(`/instituciones/${id}`);
 }
 
@@ -54,5 +57,6 @@ export async function deleteInstitucion(id: string): Promise<{ error?: string } 
   }
 
   await db.delete(instituciones).where(eq(instituciones.id, id));
+  revalidatePath("/", "layout");
   redirect("/instituciones");
 }

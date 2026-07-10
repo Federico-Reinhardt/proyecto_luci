@@ -2,6 +2,7 @@
 
 import { eq } from "drizzle-orm";
 import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
 import { db } from "@/db";
 import { mesas } from "@/db/schema";
 import type { ModalidadMesa, EstadoMesa } from "@/db/schema";
@@ -28,6 +29,7 @@ export async function createMesa(_state: ActionState, formData: FormData): Promi
     return { error: "Institución, fecha, bimestre, año y modalidad son obligatorios." };
   }
   const [row] = await db.insert(mesas).values(values).returning({ id: mesas.id });
+  revalidatePath("/", "layout");
   redirect(`/mesas/${row.id}`);
 }
 
@@ -37,10 +39,12 @@ export async function updateMesa(id: string, _state: ActionState, formData: Form
     return { error: "Institución, fecha, bimestre, año y modalidad son obligatorios." };
   }
   await db.update(mesas).set(values).where(eq(mesas.id, id));
+  revalidatePath("/", "layout");
   redirect(`/mesas/${id}`);
 }
 
 export async function deleteMesa(id: string): Promise<{ error?: string } | void> {
   await db.delete(mesas).where(eq(mesas.id, id));
+  revalidatePath("/", "layout");
   redirect("/mesas");
 }

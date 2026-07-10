@@ -2,6 +2,7 @@
 
 import { eq } from "drizzle-orm";
 import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
 import { db } from "@/db";
 import { alumnos, intervenciones } from "@/db/schema";
 import type { SituacionEscolar } from "@/db/schema";
@@ -41,6 +42,7 @@ export async function createAlumno(_state: ActionState, formData: FormData): Pro
     return { error: "Nombre, apellido, fecha de nacimiento, institución y situación escolar son obligatorios." };
   }
   const [row] = await db.insert(alumnos).values(values).returning({ id: alumnos.id });
+  revalidatePath("/", "layout");
   redirect(`/alumnos/${row.id}`);
 }
 
@@ -50,11 +52,13 @@ export async function updateAlumno(id: string, _state: ActionState, formData: Fo
     return { error: "Nombre, apellido, fecha de nacimiento, institución y situación escolar son obligatorios." };
   }
   await db.update(alumnos).set(values).where(eq(alumnos.id, id));
+  revalidatePath("/", "layout");
   redirect(`/alumnos/${id}`);
 }
 
 export async function deleteAlumno(id: string): Promise<{ error?: string } | void> {
   await db.delete(intervenciones).where(eq(intervenciones.alumnoId, id));
   await db.delete(alumnos).where(eq(alumnos.id, id));
+  revalidatePath("/", "layout");
   redirect("/alumnos");
 }

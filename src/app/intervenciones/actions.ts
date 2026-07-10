@@ -2,6 +2,7 @@
 
 import { eq } from "drizzle-orm";
 import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
 import { db } from "@/db";
 import { intervenciones } from "@/db/schema";
 import type { TipoIntervencion, EstadoIntervencion } from "@/db/schema";
@@ -27,6 +28,7 @@ export async function createIntervencion(_state: ActionState, formData: FormData
     return { error: "Alumno, institución, fecha y tipo son obligatorios." };
   }
   const [row] = await db.insert(intervenciones).values(values).returning({ id: intervenciones.id });
+  revalidatePath("/", "layout");
   redirect(`/intervenciones/${row.id}`);
 }
 
@@ -36,10 +38,12 @@ export async function updateIntervencion(id: string, _state: ActionState, formDa
     return { error: "Alumno, institución, fecha y tipo son obligatorios." };
   }
   await db.update(intervenciones).set(values).where(eq(intervenciones.id, id));
+  revalidatePath("/", "layout");
   redirect(`/intervenciones/${id}`);
 }
 
 export async function deleteIntervencion(id: string): Promise<{ error?: string } | void> {
   await db.delete(intervenciones).where(eq(intervenciones.id, id));
+  revalidatePath("/", "layout");
   redirect("/intervenciones");
 }
