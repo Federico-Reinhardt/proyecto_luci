@@ -106,6 +106,7 @@ export const institucionesRelations = relations(instituciones, ({ many }) => ({
 export const alumnosRelations = relations(alumnos, ({ many, one }) => ({
   institucion: one(instituciones, { fields: [alumnos.institucionId], references: [instituciones.id] }),
   intervenciones: many(intervenciones),
+  trayectorias: many(trayectoriasEducativas),
 }));
 
 export const mesasRelations = relations(mesas, ({ one }) => ({
@@ -117,7 +118,39 @@ export const intervencionesRelations = relations(intervenciones, ({ one }) => ({
   institucion: one(instituciones, { fields: [intervenciones.institucionId], references: [instituciones.id] }),
 }));
 
+export const docentes = pgTable("docentes", {
+  id: id(),
+  nombre: text("nombre").notNull(),
+  apellido: text("apellido").notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+export const trayectoriasEducativas = pgTable("trayectorias_educativas", {
+  id: id(),
+  alumnoId: text("alumno_id")
+    .notNull()
+    .references(() => alumnos.id),
+  docenteId: text("docente_id")
+    .notNull()
+    .references(() => docentes.id),
+  fechaRegistro: date("fecha_registro", { mode: "string" }).notNull(),
+  descripcion: text("descripcion").notNull().default(""),
+  accionesAcuerdosEducativos: text("acciones_acuerdos_educativos").notNull().default(""),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+export const docentesRelations = relations(docentes, ({ many }) => ({
+  trayectorias: many(trayectoriasEducativas),
+}));
+
+export const trayectoriasEducativasRelations = relations(trayectoriasEducativas, ({ one }) => ({
+  alumno: one(alumnos, { fields: [trayectoriasEducativas.alumnoId], references: [alumnos.id] }),
+  docente: one(docentes, { fields: [trayectoriasEducativas.docenteId], references: [docentes.id] }),
+}));
+
 export type Institucion = typeof instituciones.$inferSelect;
 export type Mesa = typeof mesas.$inferSelect;
 export type Alumno = typeof alumnos.$inferSelect;
 export type Intervencion = typeof intervenciones.$inferSelect;
+export type Docente = typeof docentes.$inferSelect;
+export type TrayectoriaEducativa = typeof trayectoriasEducativas.$inferSelect;

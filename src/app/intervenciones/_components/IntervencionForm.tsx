@@ -49,7 +49,7 @@ export default function IntervencionForm({
               ))}
             </select>
           </FormField>
-          <FormField label="Tipo">
+          <FormField label="Nivel">
             <select name="tipo" defaultValue={intervencion?.tipo ?? ""} className={fieldClass}>
               <option value="" disabled>
                 Seleccioná una opción

@@ -149,3 +149,14 @@ export function IconChevronRight({ className }: IconProps) {
     </svg>
   );
 }
+
+export function IconRoute({ className }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" className={className}>
+      <circle cx="5" cy="6" r="2.2" />
+      <circle cx="19" cy="18" r="2.2" />
+      <path d="M5 8.2V13a4 4 0 0 0 4 4h6" />
+      <path d="M17.5 15.5L19 17l1.5-1.5" />
+    </svg>
+  );
+}

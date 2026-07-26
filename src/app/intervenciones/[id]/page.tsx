@@ -67,7 +67,7 @@ export default async function IntervencionDetallePage({ params }: { params: Prom
             }
           />
           <InfoField label="Responsable" value={intervencion.responsable} />
-          <InfoField label="Tipo" value={intervencion.tipo} />
+          <InfoField label="Nivel" value={intervencion.tipo} />
           <InfoField label="Fecha" value={formatFecha(intervencion.fecha)} />
           <InfoField label="Fecha próximo seguimiento" value={formatFecha(intervencion.fechaProximoSeguimiento)} />
         </div>
