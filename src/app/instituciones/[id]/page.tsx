@@ -28,7 +28,7 @@ export default async function InstitucionDetallePage({ params }: { params: Promi
       <PageHeader
         backHref="/instituciones"
         title={institucion.nombre}
-        description={`${institucion.tipo} · ${institucion.nivel}`}
+        description={institucion.tipo}
         actions={
           <>
             <Link

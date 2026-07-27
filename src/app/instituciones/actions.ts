@@ -12,7 +12,6 @@ function readInstitucion(formData: FormData) {
   return {
     nombre: str(formData, "nombre"),
     tipo: str(formData, "tipo") as TipoInstitucion,
-    nivel: str(formData, "nivel"),
     direccion: str(formData, "direccion"),
     telefono: str(formData, "telefono"),
     email: str(formData, "email"),

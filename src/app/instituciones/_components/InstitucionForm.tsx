@@ -19,7 +19,7 @@ export default function InstitucionForm({ institucion }: { institucion?: Institu
           <FormField label="Nombre" className="sm:col-span-2">
             <input name="nombre" type="text" defaultValue={institucion?.nombre} className={fieldClass} placeholder="Ej: Escuela Primaria N°12" />
           </FormField>
-          <FormField label="Tipo">
+          <FormField label="Nivel">
             <select name="tipo" defaultValue={institucion?.tipo ?? ""} className={fieldClass}>
               <option value="" disabled>
                 Seleccioná una opción
@@ -30,9 +30,6 @@ export default function InstitucionForm({ institucion }: { institucion?: Institu
                 </option>
               ))}
             </select>
-          </FormField>
-          <FormField label="Nivel">
-            <input name="nivel" type="text" defaultValue={institucion?.nivel} className={fieldClass} placeholder="Ej: Primario" />
           </FormField>
           <FormField label="Dirección" className="sm:col-span-2">
             <input name="direccion" type="text" defaultValue={institucion?.direccion} className={fieldClass} />
