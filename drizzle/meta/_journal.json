@@ -15,6 +15,13 @@
       "when": 1785106209905,
       "tag": "0001_bored_the_leader",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1787748044805,
+      "tag": "0002_needy_pet_avengers",
+      "breakpoints": true
     }
   ]
 }
