@@ -11,6 +11,7 @@ import {
   IconUsers,
   IconClipboard,
   IconCalendar,
+  IconRoute,
   IconMenu,
   IconClose,
 } from "@/components/icons";
@@ -21,6 +22,7 @@ const navItems = [
   { href: "/mesas", label: "Mesas", icon: IconMeeting },
   { href: "/alumnos", label: "Alumnos", icon: IconUsers },
   { href: "/intervenciones", label: "Intervenciones", icon: IconClipboard },
+  { href: "/trayectoria-educativa", label: "Trayectoria educativa", icon: IconRoute },
   { href: "/calendario", label: "Calendario", icon: IconCalendar },
 ];
 

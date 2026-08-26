@@ -40,7 +40,7 @@ export default async function IntervencionesPage() {
                   <th className="px-4 py-3 text-left font-medium text-slate-500">Alumno</th>
                   <th className="px-4 py-3 text-left font-medium text-slate-500">Institución</th>
                   <th className="px-4 py-3 text-left font-medium text-slate-500">Fecha</th>
-                  <th className="px-4 py-3 text-left font-medium text-slate-500">Tipo</th>
+                  <th className="px-4 py-3 text-left font-medium text-slate-500">Nivel</th>
                   <th className="px-4 py-3 text-left font-medium text-slate-500">Estado</th>
                   <th className="px-4 py-3" />
                 </tr>

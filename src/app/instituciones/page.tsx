@@ -30,7 +30,6 @@ export default async function InstitucionesPage() {
               <thead className="bg-slate-50">
                 <tr>
                   <th className="px-4 py-3 text-left font-medium text-slate-500">Nombre</th>
-                  <th className="px-4 py-3 text-left font-medium text-slate-500">Tipo</th>
                   <th className="px-4 py-3 text-left font-medium text-slate-500">Nivel</th>
                   <th className="px-4 py-3 text-left font-medium text-slate-500">Referente</th>
                   <th className="px-4 py-3 text-left font-medium text-slate-500">Teléfono</th>
@@ -42,7 +41,6 @@ export default async function InstitucionesPage() {
                   <tr key={inst.id} className="hover:bg-slate-50">
                     <td className="px-4 py-3 font-medium text-slate-900">{inst.nombre}</td>
                     <td className="px-4 py-3 text-slate-600">{inst.tipo}</td>
-                    <td className="px-4 py-3 text-slate-600">{inst.nivel}</td>
                     <td className="px-4 py-3 text-slate-600">{inst.referente}</td>
                     <td className="px-4 py-3 text-slate-600">{inst.telefono}</td>
                     <td className="px-4 py-3 text-right">
@@ -61,9 +59,7 @@ export default async function InstitucionesPage() {
               <Link key={inst.id} href={`/instituciones/${inst.id}`}>
                 <Card className="p-4">
                   <p className="font-medium text-slate-900">{inst.nombre}</p>
-                  <p className="mt-1 text-sm text-slate-500">
-                    {inst.tipo} · {inst.nivel}
-                  </p>
+                  <p className="mt-1 text-sm text-slate-500">{inst.tipo}</p>
                   <p className="mt-2 text-sm text-slate-600">Referente: {inst.referente}</p>
                   <p className="text-sm text-slate-600">{inst.telefono}</p>
                 </Card>
