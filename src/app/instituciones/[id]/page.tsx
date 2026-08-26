@@ -27,8 +27,8 @@ export default async function InstitucionDetallePage({ params }: { params: Promi
     <div>
       <PageHeader
         backHref="/instituciones"
-        title={institucion.nombre}
-        description={`${institucion.tipo} · ${institucion.nivel}`}
+        title={institucion.nombre || "Institución sin nombre"}
+        description={[institucion.tipo, institucion.nivel].filter(Boolean).join(" · ")}
         actions={
           <>
             <Link
@@ -101,7 +101,9 @@ export default async function InstitucionDetallePage({ params }: { params: Promi
                       {alumno.gradoAnioSala} · DNI {alumno.dni}
                     </p>
                   </div>
-                  <Badge color={colorSituacionEscolar(alumno.situacionEscolar)}>{alumno.situacionEscolar}</Badge>
+                  {alumno.situacionEscolar && (
+                    <Badge color={colorSituacionEscolar(alumno.situacionEscolar)}>{alumno.situacionEscolar}</Badge>
+                  )}
                 </Card>
               </Link>
             ))}

@@ -48,3 +48,11 @@ export async function deleteMesa(id: string): Promise<{ error?: string } | void>
   revalidatePath("/", "layout");
   redirect("/mesas");
 }
+
+export async function toggleMesaRealizada(id: string, hecho: boolean): Promise<void> {
+  await db
+    .update(mesas)
+    .set({ estado: hecho ? "Realizada" : "Programada" })
+    .where(eq(mesas.id, id));
+  revalidatePath("/", "layout");
+}

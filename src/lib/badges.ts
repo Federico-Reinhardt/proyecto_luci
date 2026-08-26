@@ -23,7 +23,7 @@ export function colorEstadoIntervencion(estado: EstadoIntervencion): BadgeColor 
   }
 }
 
-export function colorSituacionEscolar(situacion: SituacionEscolar): BadgeColor {
+export function colorSituacionEscolar(situacion: SituacionEscolar | null): BadgeColor {
   switch (situacion) {
     case "Escolarizado":
       return "green";
@@ -33,5 +33,7 @@ export function colorSituacionEscolar(situacion: SituacionEscolar): BadgeColor {
       return "red";
     case "En proceso de inclusión":
       return "blue";
+    default:
+      return "gray";
   }
 }

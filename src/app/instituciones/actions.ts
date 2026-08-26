@@ -11,7 +11,7 @@ import { str, type ActionState } from "@/lib/form-utils";
 function readInstitucion(formData: FormData) {
   return {
     nombre: str(formData, "nombre"),
-    tipo: str(formData, "tipo") as TipoInstitucion,
+    tipo: (str(formData, "tipo") || null) as TipoInstitucion | null,
     nivel: str(formData, "nivel"),
     direccion: str(formData, "direccion"),
     telefono: str(formData, "telefono"),
@@ -25,9 +25,6 @@ function readInstitucion(formData: FormData) {
 
 export async function createInstitucion(_state: ActionState, formData: FormData): Promise<ActionState> {
   const values = readInstitucion(formData);
-  if (!values.nombre || !values.tipo) {
-    return { error: "Nombre y tipo son obligatorios." };
-  }
   const [row] = await db.insert(instituciones).values(values).returning({ id: instituciones.id });
   revalidatePath("/", "layout");
   redirect(`/instituciones/${row.id}`);
@@ -35,9 +32,6 @@ export async function createInstitucion(_state: ActionState, formData: FormData)
 
 export async function updateInstitucion(id: string, _state: ActionState, formData: FormData): Promise<ActionState> {
   const values = readInstitucion(formData);
-  if (!values.nombre || !values.tipo) {
-    return { error: "Nombre y tipo son obligatorios." };
-  }
   await db.update(instituciones).set(values).where(eq(instituciones.id, id));
   revalidatePath("/", "layout");
   redirect(`/instituciones/${id}`);

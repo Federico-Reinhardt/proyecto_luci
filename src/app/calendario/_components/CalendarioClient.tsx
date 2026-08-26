@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useTransition } from "react";
 import Link from "next/link";
 import { Card, Badge, PageHeader, badgeColorClasses, type BadgeColor } from "@/components/ui";
 import { IconChevronLeft, IconChevronRight } from "@/components/icons";
@@ -8,6 +8,8 @@ import type { Mesa, Intervencion, Institucion, Alumno } from "@/db/schema";
 import { getMonthMatrix, toISODate } from "@/lib/calendar";
 import { formatFecha } from "@/lib/format";
 import { colorEstadoMesa } from "@/lib/badges";
+import { toggleMesaRealizada } from "@/app/mesas/actions";
+import { toggleSeguimientoHecho } from "@/app/intervenciones/actions";
 
 const MESES = [
   "enero", "febrero", "marzo", "abril", "mayo", "junio",
@@ -22,6 +24,8 @@ type EventoCalendario = {
   subtitulo: string;
   href: string;
   color: BadgeColor;
+  hecho: boolean;
+  onToggle: (hecho: boolean) => Promise<void>;
 };
 
 export default function CalendarioClient({
@@ -36,6 +40,9 @@ export default function CalendarioClient({
   alumnos: Alumno[];
 }) {
   const [cursor, setCursor] = useState(new Date(2026, 6, 1));
+  const [pending, startTransition] = useTransition();
+  const [togglingId, setTogglingId] = useState<string | null>(null);
+  const [overrides, setOverrides] = useState<Record<string, boolean>>({});
   const getInstitucion = (id: string) => instituciones.find((i) => i.id === id);
   const getAlumno = (id: string) => alumnos.find((a) => a.id === id);
 
@@ -49,6 +56,8 @@ export default function CalendarioClient({
         subtitulo: `Mesa de coordinación · ${m.modalidad}`,
         href: `/mesas/${m.id}`,
         color: colorEstadoMesa(m.estado),
+        hecho: overrides[`mesa-${m.id}`] ?? m.estado === "Realizada",
+        onToggle: (hecho: boolean) => toggleMesaRealizada(m.id, hecho),
       }));
     const eventosSeguimiento: EventoCalendario[] = intervenciones
       .filter((i): i is typeof i & { fechaProximoSeguimiento: string } => Boolean(i.fechaProximoSeguimiento))
@@ -61,11 +70,22 @@ export default function CalendarioClient({
           subtitulo: "Próximo seguimiento",
           href: `/intervenciones/${i.id}`,
           color: "amber" as BadgeColor,
+          hecho: overrides[`seg-${i.id}`] ?? i.seguimientoHecho,
+          onToggle: (hecho: boolean) => toggleSeguimientoHecho(i.id, hecho),
         };
       });
     return [...eventosMesas, ...eventosSeguimiento];
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mesas, intervenciones, instituciones, alumnos]);
+  }, [mesas, intervenciones, instituciones, alumnos, overrides]);
+
+  function handleToggle(ev: EventoCalendario, hecho: boolean) {
+    setOverrides((prev) => ({ ...prev, [ev.id]: hecho }));
+    setTogglingId(ev.id);
+    startTransition(async () => {
+      await ev.onToggle(hecho);
+      setTogglingId(null);
+    });
+  }
 
   const year = cursor.getFullYear();
   const month = cursor.getMonth();
@@ -84,7 +104,44 @@ export default function CalendarioClient({
     <div>
       <PageHeader title="Calendario" description="Mesas programadas y próximos seguimientos." />
 
-      <Card className="p-4 sm:p-5">
+      <div>
+        <h2 className="mb-3 text-base font-semibold text-slate-900 capitalize">Eventos de {MESES[month]}</h2>
+        {eventosDelMes.length === 0 ? (
+          <p className="text-sm text-slate-500">No hay eventos este mes.</p>
+        ) : (
+          <div className="grid gap-3">
+            {eventosDelMes.map((ev) => {
+              const vencido = ev.fecha < hoy && !ev.hecho;
+              return (
+                <Card key={ev.id} className={`flex items-center gap-3 p-4 ${ev.hecho ? "opacity-60" : ""}`}>
+                  <input
+                    type="checkbox"
+                    checked={ev.hecho}
+                    disabled={pending && togglingId === ev.id}
+                    onChange={(e) => handleToggle(ev, e.target.checked)}
+                    aria-label={ev.hecho ? "Marcar como pendiente" : "Marcar como hecho"}
+                    className="h-4 w-4 shrink-0 rounded border-slate-300 text-teal-600 focus:ring-teal-500"
+                  />
+                  <Link href={ev.href} className="flex min-w-0 flex-1 items-center justify-between gap-3 hover:opacity-80">
+                    <div className="min-w-0">
+                      <p className={`truncate text-sm font-medium text-slate-900 ${ev.hecho ? "line-through" : ""}`}>
+                        {ev.titulo}
+                      </p>
+                      <p className="text-xs text-slate-500">{ev.subtitulo}</p>
+                    </div>
+                    <div className="flex shrink-0 items-center gap-2">
+                      {vencido && <Badge color="red">Vencido</Badge>}
+                      <Badge color={ev.color}>{formatFecha(ev.fecha)}</Badge>
+                    </div>
+                  </Link>
+                </Card>
+              );
+            })}
+          </div>
+        )}
+      </div>
+
+      <Card className="mt-6 p-4 sm:p-5">
         <div className="mb-4 flex items-center justify-between">
           <button
             onClick={() => cambiarMes(-1)}
@@ -128,7 +185,7 @@ export default function CalendarioClient({
                             key={ev.id}
                             href={ev.href}
                             title={`${ev.titulo} — ${ev.subtitulo}`}
-                            className={`truncate rounded px-1 py-0.5 text-[10px] leading-tight font-medium ${badgeColorClasses[ev.color]}`}
+                            className={`truncate rounded px-1 py-0.5 text-[10px] leading-tight font-medium ${badgeColorClasses[ev.color]} ${ev.hecho ? "opacity-50 line-through" : ""}`}
                           >
                             {ev.titulo}
                           </Link>
@@ -142,27 +199,6 @@ export default function CalendarioClient({
           )}
         </div>
       </Card>
-
-      <div className="mt-6">
-        <h2 className="mb-3 text-base font-semibold text-slate-900 capitalize">Eventos de {MESES[month]}</h2>
-        {eventosDelMes.length === 0 ? (
-          <p className="text-sm text-slate-500">No hay eventos este mes.</p>
-        ) : (
-          <div className="grid gap-3">
-            {eventosDelMes.map((ev) => (
-              <Link key={ev.id} href={ev.href}>
-                <Card className="flex items-center justify-between gap-3 p-4 hover:bg-slate-50">
-                  <div className="min-w-0">
-                    <p className="truncate text-sm font-medium text-slate-900">{ev.titulo}</p>
-                    <p className="text-xs text-slate-500">{ev.subtitulo}</p>
-                  </div>
-                  <Badge color={ev.color}>{formatFecha(ev.fecha)}</Badge>
-                </Card>
-              </Link>
-            ))}
-          </div>
-        )}
-      </div>
     </div>
   );
 }

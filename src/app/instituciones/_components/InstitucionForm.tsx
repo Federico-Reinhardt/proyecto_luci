@@ -21,9 +21,7 @@ export default function InstitucionForm({ institucion }: { institucion?: Institu
           </FormField>
           <FormField label="Tipo">
             <select name="tipo" defaultValue={institucion?.tipo ?? ""} className={fieldClass}>
-              <option value="" disabled>
-                Seleccioná una opción
-              </option>
+              <option value="">Seleccioná una opción</option>
               {TIPOS.map((tipo) => (
                 <option key={tipo} value={tipo}>
                   {tipo}

@@ -47,3 +47,8 @@ export async function deleteIntervencion(id: string): Promise<{ error?: string }
   revalidatePath("/", "layout");
   redirect("/intervenciones");
 }
+
+export async function toggleSeguimientoHecho(id: string, hecho: boolean): Promise<void> {
+  await db.update(intervenciones).set({ seguimientoHecho: hecho }).where(eq(intervenciones.id, id));
+  revalidatePath("/", "layout");
+}

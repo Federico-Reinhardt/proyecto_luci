@@ -8,6 +8,27 @@
       "when": 1783695044112,
       "tag": "0000_massive_stone_men",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1787746233652,
+      "tag": "0001_wild_fallen_one",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1787746668498,
+      "tag": "0002_stormy_george_stacy",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1787747474662,
+      "tag": "0003_majestic_maximus",
+      "breakpoints": true
     }
   ]
 }

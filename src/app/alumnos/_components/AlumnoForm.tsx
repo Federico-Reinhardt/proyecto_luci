@@ -31,7 +31,7 @@ export default function AlumnoForm({ alumno, instituciones }: { alumno?: Alumno;
             <input name="dni" type="text" defaultValue={alumno?.dni} className={fieldClass} />
           </FormField>
           <FormField label="Fecha de nacimiento">
-            <input name="fechaNacimiento" type="date" defaultValue={alumno?.fechaNacimiento} className={fieldClass} />
+            <input name="fechaNacimiento" type="date" defaultValue={alumno?.fechaNacimiento ?? ""} className={fieldClass} />
           </FormField>
           <FormField label="Género">
             <input name="genero" type="text" defaultValue={alumno?.genero} className={fieldClass} placeholder="Ej: Femenino" />
@@ -71,9 +71,7 @@ export default function AlumnoForm({ alumno, instituciones }: { alumno?: Alumno;
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
           <FormField label="Institución">
             <select name="institucionId" defaultValue={alumno?.institucionId ?? ""} className={fieldClass}>
-              <option value="" disabled>
-                Seleccioná una institución
-              </option>
+              <option value="">Seleccioná una institución</option>
               {instituciones.map((inst) => (
                 <option key={inst.id} value={inst.id}>
                   {inst.nombre}
@@ -92,9 +90,7 @@ export default function AlumnoForm({ alumno, instituciones }: { alumno?: Alumno;
           </FormField>
           <FormField label="Situación de escolaridad">
             <select name="situacionEscolar" defaultValue={alumno?.situacionEscolar ?? ""} className={fieldClass}>
-              <option value="" disabled>
-                Seleccioná una opción
-              </option>
+              <option value="">Seleccioná una opción</option>
               {SITUACIONES.map((s) => (
                 <option key={s} value={s}>
                   {s}

@@ -13,7 +13,7 @@ function readAlumno(formData: FormData) {
     nombre: str(formData, "nombre"),
     apellido: str(formData, "apellido"),
     dni: str(formData, "dni"),
-    fechaNacimiento: str(formData, "fechaNacimiento"),
+    fechaNacimiento: str(formData, "fechaNacimiento") || null,
     genero: str(formData, "genero"),
     direccion: str(formData, "direccion"),
     localidad: str(formData, "localidad"),
@@ -22,11 +22,11 @@ function readAlumno(formData: FormData) {
     responsableVinculo: str(formData, "responsableVinculo"),
     responsableDni: str(formData, "responsableDni"),
     responsableTelefono: str(formData, "responsableTelefono"),
-    institucionId: str(formData, "institucionId"),
+    institucionId: str(formData, "institucionId") || null,
     nivel: str(formData, "nivel"),
     gradoAnioSala: str(formData, "gradoAnioSala"),
     turno: str(formData, "turno"),
-    situacionEscolar: str(formData, "situacionEscolar") as SituacionEscolar,
+    situacionEscolar: (str(formData, "situacionEscolar") || null) as SituacionEscolar | null,
     trayectoriaPrevia: str(formData, "trayectoriaPrevia"),
     obraSocial: str(formData, "obraSocial"),
     condicionesSalud: str(formData, "condicionesSalud"),
@@ -38,9 +38,6 @@ function readAlumno(formData: FormData) {
 
 export async function createAlumno(_state: ActionState, formData: FormData): Promise<ActionState> {
   const values = readAlumno(formData);
-  if (!values.nombre || !values.apellido || !values.fechaNacimiento || !values.institucionId || !values.situacionEscolar) {
-    return { error: "Nombre, apellido, fecha de nacimiento, institución y situación escolar son obligatorios." };
-  }
   const [row] = await db.insert(alumnos).values(values).returning({ id: alumnos.id });
   revalidatePath("/", "layout");
   redirect(`/alumnos/${row.id}`);
@@ -48,9 +45,6 @@ export async function createAlumno(_state: ActionState, formData: FormData): Pro
 
 export async function updateAlumno(id: string, _state: ActionState, formData: FormData): Promise<ActionState> {
   const values = readAlumno(formData);
-  if (!values.nombre || !values.apellido || !values.fechaNacimiento || !values.institucionId || !values.situacionEscolar) {
-    return { error: "Nombre, apellido, fecha de nacimiento, institución y situación escolar son obligatorios." };
-  }
   await db.update(alumnos).set(values).where(eq(alumnos.id, id));
   revalidatePath("/", "layout");
   redirect(`/alumnos/${id}`);

@@ -1,0 +1,1 @@
+ALTER TABLE "intervenciones" ADD COLUMN "seguimiento_hecho" boolean DEFAULT false NOT NULL;

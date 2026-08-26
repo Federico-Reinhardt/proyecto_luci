@@ -4,7 +4,8 @@ export function formatFecha(iso: string | null | undefined): string {
   return new Intl.DateTimeFormat("es-AR", { day: "2-digit", month: "short", year: "numeric" }).format(date);
 }
 
-export function calcularEdad(fechaNacimiento: string): number {
+export function calcularEdad(fechaNacimiento: string | null): number | null {
+  if (!fechaNacimiento) return null;
   const nacimiento = new Date(fechaNacimiento + "T00:00:00");
   const hoy = new Date();
   let edad = hoy.getFullYear() - nacimiento.getFullYear();

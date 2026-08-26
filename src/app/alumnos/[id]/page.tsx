@@ -13,19 +13,23 @@ export default async function AlumnoFichaPage({ params }: { params: Promise<{ id
   if (!alumno) notFound();
 
   const [institucion, historial] = await Promise.all([
-    getInstitucion(alumno.institucionId),
+    alumno.institucionId ? getInstitucion(alumno.institucionId) : Promise.resolve(undefined),
     intervencionesDeAlumno(alumno.id),
   ]);
+
+  const edad = calcularEdad(alumno.fechaNacimiento);
 
   return (
     <div>
       <PageHeader
         backHref="/alumnos"
         title={`${alumno.nombre} ${alumno.apellido}`}
-        description={`DNI ${alumno.dni} · ${calcularEdad(alumno.fechaNacimiento)} años`}
+        description={`DNI ${alumno.dni}${edad !== null ? ` · ${edad} años` : ""}`}
         actions={
           <>
-            <Badge color={colorSituacionEscolar(alumno.situacionEscolar)}>{alumno.situacionEscolar}</Badge>
+            {alumno.situacionEscolar && (
+              <Badge color={colorSituacionEscolar(alumno.situacionEscolar)}>{alumno.situacionEscolar}</Badge>
+            )}
             <Link
               href={`/alumnos/${alumno.id}/editar`}
               className="rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
@@ -47,7 +51,7 @@ export default async function AlumnoFichaPage({ params }: { params: Promise<{ id
             <InfoField label="Nombre y apellido" value={`${alumno.nombre} ${alumno.apellido}`} />
             <InfoField label="DNI" value={alumno.dni} />
             <InfoField label="Fecha de nacimiento" value={formatFecha(alumno.fechaNacimiento)} />
-            <InfoField label="Edad" value={`${calcularEdad(alumno.fechaNacimiento)} años`} />
+            <InfoField label="Edad" value={edad !== null ? `${edad} años` : "-"} />
             <InfoField label="Género" value={alumno.genero} />
             <InfoField label="Teléfono" value={alumno.telefono} />
             <InfoField label="Dirección" value={alumno.direccion} />
@@ -85,7 +89,13 @@ export default async function AlumnoFichaPage({ params }: { params: Promise<{ id
             <InfoField label="Turno" value={alumno.turno} />
             <InfoField
               label="Situación de escolaridad"
-              value={<Badge color={colorSituacionEscolar(alumno.situacionEscolar)}>{alumno.situacionEscolar}</Badge>}
+              value={
+                alumno.situacionEscolar ? (
+                  <Badge color={colorSituacionEscolar(alumno.situacionEscolar)}>{alumno.situacionEscolar}</Badge>
+                ) : (
+                  "-"
+                )
+              }
             />
           </div>
           <div className="mt-5 border-t border-slate-100 pt-5">

@@ -19,8 +19,8 @@ export type EstadoIntervencion = "Abierta" | "En seguimiento" | "Cerrada";
 
 export const instituciones = pgTable("instituciones", {
   id: id(),
-  nombre: text("nombre").notNull(),
-  tipo: text("tipo").$type<TipoInstitucion>().notNull(),
+  nombre: text("nombre").notNull().default(""),
+  tipo: text("tipo").$type<TipoInstitucion>(),
   nivel: text("nivel").notNull().default(""),
   direccion: text("direccion").notNull().default(""),
   telefono: text("telefono").notNull().default(""),
@@ -51,10 +51,10 @@ export const mesas = pgTable("mesas", {
 
 export const alumnos = pgTable("alumnos", {
   id: id(),
-  nombre: text("nombre").notNull(),
-  apellido: text("apellido").notNull(),
+  nombre: text("nombre").notNull().default(""),
+  apellido: text("apellido").notNull().default(""),
   dni: text("dni").notNull().default(""),
-  fechaNacimiento: date("fecha_nacimiento", { mode: "string" }).notNull(),
+  fechaNacimiento: date("fecha_nacimiento", { mode: "string" }),
   genero: text("genero").notNull().default(""),
   direccion: text("direccion").notNull().default(""),
   localidad: text("localidad").notNull().default(""),
@@ -63,13 +63,11 @@ export const alumnos = pgTable("alumnos", {
   responsableVinculo: text("responsable_vinculo").notNull().default(""),
   responsableDni: text("responsable_dni").notNull().default(""),
   responsableTelefono: text("responsable_telefono").notNull().default(""),
-  institucionId: text("institucion_id")
-    .notNull()
-    .references(() => instituciones.id),
+  institucionId: text("institucion_id").references(() => instituciones.id),
   nivel: text("nivel").notNull().default(""),
   gradoAnioSala: text("grado_anio_sala").notNull().default(""),
   turno: text("turno").notNull().default(""),
-  situacionEscolar: text("situacion_escolar").$type<SituacionEscolar>().notNull(),
+  situacionEscolar: text("situacion_escolar").$type<SituacionEscolar>(),
   trayectoriaPrevia: text("trayectoria_previa").notNull().default(""),
   obraSocial: text("obra_social").notNull().default(""),
   condicionesSalud: text("condiciones_salud").notNull().default(""),
@@ -94,6 +92,7 @@ export const intervenciones = pgTable("intervenciones", {
   responsable: text("responsable").notNull().default(""),
   estado: text("estado").$type<EstadoIntervencion>().notNull().default("Abierta"),
   fechaProximoSeguimiento: date("fecha_proximo_seguimiento", { mode: "string" }),
+  seguimientoHecho: boolean("seguimiento_hecho").notNull().default(false),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
