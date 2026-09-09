@@ -1,9 +1,12 @@
 import Link from "next/link";
-import { PageHeader, Card, Badge, TableWrapper, EmptyState } from "@/components/ui";
+import { PageHeader, Card, Badge, EmptyState } from "@/components/ui";
 import { IconPlus } from "@/components/icons";
 import { listIntervenciones, listAlumnos, listInstituciones } from "@/db/queries";
 import { formatFecha } from "@/lib/format";
 import { colorEstadoIntervencion } from "@/lib/badges";
+import type { Alumno, Intervencion } from "@/db/schema";
+
+const SIN_ALUMNO = "Sin alumno";
 
 export default async function IntervencionesPage() {
   const [intervenciones, alumnos, instituciones] = await Promise.all([
@@ -13,6 +16,16 @@ export default async function IntervencionesPage() {
   ]);
   const alumno = (id: string | null) => alumnos.find((a) => a.id === id);
   const nombreInstitucion = (id: string | null) => instituciones.find((i) => i.id === id)?.nombre;
+
+  const grupos = new Map<string, { alumno: Alumno | undefined; intervenciones: Intervencion[] }>();
+  for (const intervencion of intervenciones) {
+    const a = alumno(intervencion.alumnoId);
+    const clave = a?.id ?? SIN_ALUMNO;
+    const grupo = grupos.get(clave) ?? { alumno: a, intervenciones: [] };
+    grupo.intervenciones.push(intervencion);
+    grupos.set(clave, grupo);
+  }
+  const gruposOrdenados = [...grupos.values()];
 
   return (
     <div>
@@ -32,67 +45,50 @@ export default async function IntervencionesPage() {
       {intervenciones.length === 0 ? (
         <EmptyState message="Todavía no hay intervenciones cargadas." />
       ) : (
-        <>
-          <TableWrapper className="hidden md:block">
-            <table className="min-w-full divide-y divide-slate-200 text-sm">
-              <thead className="bg-slate-50">
-                <tr>
-                  <th className="px-4 py-3 text-left font-medium text-slate-500">Alumno</th>
-                  <th className="px-4 py-3 text-left font-medium text-slate-500">Institución</th>
-                  <th className="px-4 py-3 text-left font-medium text-slate-500">Fecha</th>
-                  <th className="px-4 py-3 text-left font-medium text-slate-500">Nivel</th>
-                  <th className="px-4 py-3 text-left font-medium text-slate-500">Estado</th>
-                  <th className="px-4 py-3" />
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100">
-                {intervenciones.map((intervencion) => {
-                  const a = alumno(intervencion.alumnoId);
-                  return (
-                    <tr key={intervencion.id} className="hover:bg-slate-50">
-                      <td className="px-4 py-3 font-medium text-slate-900">
-                        {a?.nombre} {a?.apellido}
-                      </td>
-                      <td className="px-4 py-3 text-slate-600">{nombreInstitucion(intervencion.institucionId)}</td>
-                      <td className="px-4 py-3 text-slate-600">{formatFecha(intervencion.fecha)}</td>
-                      <td className="px-4 py-3 text-slate-600">{intervencion.tipo}</td>
-                      <td className="px-4 py-3">
-                        <Badge color={colorEstadoIntervencion(intervencion.estado)}>{intervencion.estado}</Badge>
-                      </td>
-                      <td className="px-4 py-3 text-right">
-                        <Link href={`/intervenciones/${intervencion.id}`} className="text-sm font-medium text-teal-600 hover:text-teal-700">
-                          Ver
-                        </Link>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </TableWrapper>
+        <div className="grid gap-8">
+          {gruposOrdenados.map(({ alumno: a, intervenciones: desarrollos }) => (
+            <div key={a?.id ?? SIN_ALUMNO}>
+              <div className="mb-3 flex items-center justify-between">
+                <h2 className="flex items-center gap-2 text-base font-semibold text-slate-900">
+                  {a ? (
+                    <Link href={`/alumnos/${a.id}`} className="hover:text-teal-600">
+                      {a.nombre} {a.apellido}
+                    </Link>
+                  ) : (
+                    SIN_ALUMNO
+                  )}
+                  <span className="rounded-full bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-500">
+                    {desarrollos.length}
+                  </span>
+                </h2>
+                {a && (
+                  <Link
+                    href={`/intervenciones/nueva?alumnoId=${a.id}`}
+                    className="text-sm font-medium text-teal-600 hover:text-teal-700"
+                  >
+                    + Nuevo desarrollo
+                  </Link>
+                )}
+              </div>
 
-          <div className="grid gap-3 md:hidden">
-            {intervenciones.map((intervencion) => {
-              const a = alumno(intervencion.alumnoId);
-              return (
-                <Link key={intervencion.id} href={`/intervenciones/${intervencion.id}`}>
-                  <Card className="p-4">
-                    <div className="flex items-center justify-between gap-2">
-                      <p className="font-medium text-slate-900">
-                        {a?.nombre} {a?.apellido}
-                      </p>
+              <div className="grid gap-3">
+                {desarrollos.map((intervencion) => (
+                  <Link key={intervencion.id} href={`/intervenciones/${intervencion.id}`}>
+                    <Card className="flex items-center justify-between gap-3 p-4 hover:bg-slate-50">
+                      <div>
+                        <p className="text-sm font-medium text-slate-900">{intervencion.tipo}</p>
+                        <p className="text-xs text-slate-500">
+                          {formatFecha(intervencion.fecha)} · {nombreInstitucion(intervencion.institucionId)}
+                        </p>
+                      </div>
                       <Badge color={colorEstadoIntervencion(intervencion.estado)}>{intervencion.estado}</Badge>
-                    </div>
-                    <p className="mt-1 text-sm text-slate-500">
-                      {intervencion.tipo} · {formatFecha(intervencion.fecha)}
-                    </p>
-                    <p className="text-sm text-slate-600">{nombreInstitucion(intervencion.institucionId)}</p>
-                  </Card>
-                </Link>
-              );
-            })}
-          </div>
-        </>
+                    </Card>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
       )}
     </div>
   );
