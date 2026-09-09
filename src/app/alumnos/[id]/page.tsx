@@ -121,7 +121,10 @@ export default async function AlumnoFichaPage({ params }: { params: Promise<{ id
         <div>
           <div className="mb-3 flex items-center justify-between">
             <h2 className="text-base font-semibold text-slate-900">Historial de intervenciones ({historial.length})</h2>
-            <Link href="/intervenciones/nueva" className="text-sm font-medium text-teal-600 hover:text-teal-700">
+            <Link
+              href={`/intervenciones/nueva?alumnoId=${alumno.id}`}
+              className="text-sm font-medium text-teal-600 hover:text-teal-700"
+            >
               + Nueva intervención
             </Link>
           </div>

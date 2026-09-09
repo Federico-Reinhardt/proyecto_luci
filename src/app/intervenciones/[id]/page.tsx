@@ -27,6 +27,12 @@ export default async function IntervencionDetallePage({ params }: { params: Prom
           <>
             <Badge color={colorEstadoIntervencion(intervencion.estado)}>{intervencion.estado}</Badge>
             <Link
+              href={`/intervenciones/nueva?alumnoId=${intervencion.alumnoId}&institucionId=${intervencion.institucionId}`}
+              className="rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+            >
+              Nuevo desarrollo
+            </Link>
+            <Link
               href={`/intervenciones/${intervencion.id}/editar`}
               className="rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
             >
@@ -73,7 +79,8 @@ export default async function IntervencionDetallePage({ params }: { params: Prom
         </div>
         <div className="mt-5 grid grid-cols-1 gap-5 border-t border-slate-100 pt-5">
           <InfoField label="Descripción" value={intervencion.descripcion} />
-          <InfoField label="Acuerdos y acciones" value={intervencion.acuerdosAcciones} />
+          <InfoField label="Acuerdo" value={intervencion.acuerdo} />
+          <InfoField label="Acciones" value={intervencion.acciones} />
         </div>
       </Card>
     </div>

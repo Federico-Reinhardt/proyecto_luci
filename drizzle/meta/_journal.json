@@ -22,6 +22,13 @@
       "when": 1787748044805,
       "tag": "0002_needy_pet_avengers",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1788959284065,
+      "tag": "0003_split_acuerdos_acciones",
+      "breakpoints": true
     }
   ]
 }

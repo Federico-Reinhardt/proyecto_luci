@@ -12,10 +12,14 @@ export default function IntervencionForm({
   intervencion,
   alumnos,
   instituciones,
+  presetAlumnoId,
+  presetInstitucionId,
 }: {
   intervencion?: Intervencion;
   alumnos: Alumno[];
   instituciones: Institucion[];
+  presetAlumnoId?: string;
+  presetInstitucionId?: string;
 }) {
   const action = intervencion ? updateIntervencion.bind(null, intervencion.id) : createIntervencion;
   const [state, formAction, pending] = useActionState(action, undefined);
@@ -26,7 +30,11 @@ export default function IntervencionForm({
         <SectionTitle>Datos de la intervención</SectionTitle>
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
           <FormField label="Alumno">
-            <select name="alumnoId" defaultValue={intervencion?.alumnoId ?? ""} className={fieldClass}>
+            <select
+              name="alumnoId"
+              defaultValue={intervencion?.alumnoId ?? presetAlumnoId ?? ""}
+              className={fieldClass}
+            >
               <option value="" disabled>
                 Seleccioná un alumno
               </option>
@@ -38,7 +46,11 @@ export default function IntervencionForm({
             </select>
           </FormField>
           <FormField label="Institución">
-            <select name="institucionId" defaultValue={intervencion?.institucionId ?? ""} className={fieldClass}>
+            <select
+              name="institucionId"
+              defaultValue={intervencion?.institucionId ?? presetInstitucionId ?? ""}
+              className={fieldClass}
+            >
               <option value="" disabled>
                 Seleccioná una institución
               </option>
@@ -99,8 +111,11 @@ export default function IntervencionForm({
           <FormField label="Descripción">
             <textarea name="descripcion" defaultValue={intervencion?.descripcion} rows={3} className={fieldClass} />
           </FormField>
-          <FormField label="Acuerdos y acciones">
-            <textarea name="acuerdosAcciones" defaultValue={intervencion?.acuerdosAcciones} rows={3} className={fieldClass} />
+          <FormField label="Acuerdo">
+            <textarea name="acuerdo" defaultValue={intervencion?.acuerdo} rows={3} className={fieldClass} />
+          </FormField>
+          <FormField label="Acciones">
+            <textarea name="acciones" defaultValue={intervencion?.acciones} rows={3} className={fieldClass} />
           </FormField>
         </div>
       </Card>
