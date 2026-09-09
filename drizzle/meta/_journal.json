@@ -29,6 +29,13 @@
       "when": 1788959284065,
       "tag": "0003_split_acuerdos_acciones",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1788960542444,
+      "tag": "0004_intervenciones_campos_opcionales",
+      "breakpoints": true
     }
   ]
 }

@@ -79,14 +79,10 @@ export const alumnos = pgTable("alumnos", {
 
 export const intervenciones = pgTable("intervenciones", {
   id: id(),
-  alumnoId: text("alumno_id")
-    .notNull()
-    .references(() => alumnos.id),
-  institucionId: text("institucion_id")
-    .notNull()
-    .references(() => instituciones.id),
-  fecha: date("fecha", { mode: "string" }).notNull(),
-  tipo: text("tipo").$type<TipoIntervencion>().notNull(),
+  alumnoId: text("alumno_id").references(() => alumnos.id),
+  institucionId: text("institucion_id").references(() => instituciones.id),
+  fecha: date("fecha", { mode: "string" }),
+  tipo: text("tipo").$type<TipoIntervencion>(),
   descripcion: text("descripcion").notNull().default(""),
   acuerdo: text("acuerdo").notNull().default(""),
   acciones: text("acciones").notNull().default(""),

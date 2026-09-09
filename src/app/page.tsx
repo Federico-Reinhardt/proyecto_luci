@@ -16,7 +16,7 @@ export default async function DashboardPage() {
     listIntervenciones(),
   ]);
   const getInstitucion = (id: string) => instituciones.find((i) => i.id === id);
-  const getAlumno = (id: string) => alumnos.find((a) => a.id === id);
+  const getAlumno = (id: string | null) => alumnos.find((a) => a.id === id);
 
   const mesasBimestre = mesas.filter((m) => m.anioLectivo === ANIO_ACTUAL && m.bimestre === BIMESTRE_ACTUAL);
   const alumnosActivos = alumnos.filter((a) => a.situacionEscolar !== "Desescolarizado");

@@ -23,6 +23,7 @@ export default function IntervencionForm({
 }) {
   const action = intervencion ? updateIntervencion.bind(null, intervencion.id) : createIntervencion;
   const [state, formAction, pending] = useActionState(action, undefined);
+  const alumnoFijo = !intervencion && presetAlumnoId ? alumnos.find((a) => a.id === presetAlumnoId) : undefined;
 
   return (
     <form action={formAction}>
@@ -30,20 +31,27 @@ export default function IntervencionForm({
         <SectionTitle>Datos de la intervención</SectionTitle>
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
           <FormField label="Alumno">
-            <select
-              name="alumnoId"
-              defaultValue={intervencion?.alumnoId ?? presetAlumnoId ?? ""}
-              className={fieldClass}
-            >
-              <option value="" disabled>
-                Seleccioná un alumno
-              </option>
-              {alumnos.map((alumno) => (
-                <option key={alumno.id} value={alumno.id}>
-                  {alumno.nombre} {alumno.apellido}
-                </option>
-              ))}
-            </select>
+            {alumnoFijo ? (
+              <>
+                <p className={`${fieldClass} bg-slate-50 text-slate-700`}>
+                  {alumnoFijo.nombre} {alumnoFijo.apellido}
+                </p>
+                <input type="hidden" name="alumnoId" value={alumnoFijo.id} />
+              </>
+            ) : (
+              <select
+                name="alumnoId"
+                defaultValue={intervencion?.alumnoId ?? presetAlumnoId ?? ""}
+                className={fieldClass}
+              >
+                <option value="">Sin seleccionar</option>
+                {alumnos.map((alumno) => (
+                  <option key={alumno.id} value={alumno.id}>
+                    {alumno.nombre} {alumno.apellido}
+                  </option>
+                ))}
+              </select>
+            )}
           </FormField>
           <FormField label="Institución">
             <select
@@ -51,9 +59,7 @@ export default function IntervencionForm({
               defaultValue={intervencion?.institucionId ?? presetInstitucionId ?? ""}
               className={fieldClass}
             >
-              <option value="" disabled>
-                Seleccioná una institución
-              </option>
+              <option value="">Sin seleccionar</option>
               {instituciones.map((inst) => (
                 <option key={inst.id} value={inst.id}>
                   {inst.nombre}
@@ -63,9 +69,7 @@ export default function IntervencionForm({
           </FormField>
           <FormField label="Nivel">
             <select name="tipo" defaultValue={intervencion?.tipo ?? ""} className={fieldClass}>
-              <option value="" disabled>
-                Seleccioná una opción
-              </option>
+              <option value="">Sin seleccionar</option>
               {TIPOS.map((tipo) => (
                 <option key={tipo} value={tipo}>
                   {tipo}
@@ -74,7 +78,7 @@ export default function IntervencionForm({
             </select>
           </FormField>
           <FormField label="Fecha">
-            <input name="fecha" type="date" defaultValue={intervencion?.fecha} className={fieldClass} />
+            <input name="fecha" type="date" defaultValue={intervencion?.fecha ?? ""} className={fieldClass} />
           </FormField>
           <FormField label="Responsable">
             <input

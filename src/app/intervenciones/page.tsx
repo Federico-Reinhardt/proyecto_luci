@@ -11,8 +11,8 @@ export default async function IntervencionesPage() {
     listAlumnos(),
     listInstituciones(),
   ]);
-  const alumno = (id: string) => alumnos.find((a) => a.id === id);
-  const nombreInstitucion = (id: string) => instituciones.find((i) => i.id === id)?.nombre;
+  const alumno = (id: string | null) => alumnos.find((a) => a.id === id);
+  const nombreInstitucion = (id: string | null) => instituciones.find((i) => i.id === id)?.nombre;
 
   return (
     <div>

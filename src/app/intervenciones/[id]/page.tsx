@@ -12,22 +12,26 @@ export default async function IntervencionDetallePage({ params }: { params: Prom
   const intervencion = await getIntervencion(id);
   if (!intervencion) notFound();
 
+  const nuevoDesarrolloParams = new URLSearchParams();
+  if (intervencion.alumnoId) nuevoDesarrolloParams.set("alumnoId", intervencion.alumnoId);
+  if (intervencion.institucionId) nuevoDesarrolloParams.set("institucionId", intervencion.institucionId);
+
   const [alumno, institucion] = await Promise.all([
-    getAlumno(intervencion.alumnoId),
-    getInstitucion(intervencion.institucionId),
+    intervencion.alumnoId ? getAlumno(intervencion.alumnoId) : Promise.resolve(undefined),
+    intervencion.institucionId ? getInstitucion(intervencion.institucionId) : Promise.resolve(undefined),
   ]);
 
   return (
     <div>
       <PageHeader
         backHref="/intervenciones"
-        title={`${intervencion.tipo} · ${alumno?.nombre ?? ""} ${alumno?.apellido ?? ""}`}
+        title={`${intervencion.tipo ?? "Intervención"} · ${alumno?.nombre ?? ""} ${alumno?.apellido ?? ""}`}
         description={formatFecha(intervencion.fecha)}
         actions={
           <>
             <Badge color={colorEstadoIntervencion(intervencion.estado)}>{intervencion.estado}</Badge>
             <Link
-              href={`/intervenciones/nueva?alumnoId=${intervencion.alumnoId}&institucionId=${intervencion.institucionId}`}
+              href={`/intervenciones/nueva?${nuevoDesarrolloParams.toString()}`}
               className="rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
             >
               Nuevo desarrollo

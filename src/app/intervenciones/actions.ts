@@ -10,10 +10,10 @@ import { str, optStr, type ActionState } from "@/lib/form-utils";
 
 function readIntervencion(formData: FormData) {
   return {
-    alumnoId: str(formData, "alumnoId"),
-    institucionId: str(formData, "institucionId"),
-    fecha: str(formData, "fecha"),
-    tipo: str(formData, "tipo") as TipoIntervencion,
+    alumnoId: optStr(formData, "alumnoId"),
+    institucionId: optStr(formData, "institucionId"),
+    fecha: optStr(formData, "fecha"),
+    tipo: optStr(formData, "tipo") as TipoIntervencion | null,
     descripcion: str(formData, "descripcion"),
     acuerdo: str(formData, "acuerdo"),
     acciones: str(formData, "acciones"),
@@ -25,9 +25,6 @@ function readIntervencion(formData: FormData) {
 
 export async function createIntervencion(_state: ActionState, formData: FormData): Promise<ActionState> {
   const values = readIntervencion(formData);
-  if (!values.alumnoId || !values.institucionId || !values.fecha || !values.tipo) {
-    return { error: "Alumno, institución, fecha y tipo son obligatorios." };
-  }
   const [row] = await db.insert(intervenciones).values(values).returning({ id: intervenciones.id });
   revalidatePath("/", "layout");
   redirect(`/intervenciones/${row.id}`);
@@ -35,9 +32,6 @@ export async function createIntervencion(_state: ActionState, formData: FormData
 
 export async function updateIntervencion(id: string, _state: ActionState, formData: FormData): Promise<ActionState> {
   const values = readIntervencion(formData);
-  if (!values.alumnoId || !values.institucionId || !values.fecha || !values.tipo) {
-    return { error: "Alumno, institución, fecha y tipo son obligatorios." };
-  }
   await db.update(intervenciones).set(values).where(eq(intervenciones.id, id));
   revalidatePath("/", "layout");
   redirect(`/intervenciones/${id}`);

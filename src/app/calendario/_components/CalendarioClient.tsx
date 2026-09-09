@@ -43,8 +43,8 @@ export default function CalendarioClient({
   const [pending, startTransition] = useTransition();
   const [togglingId, setTogglingId] = useState<string | null>(null);
   const [overrides, setOverrides] = useState<Record<string, boolean>>({});
-  const getInstitucion = (id: string) => instituciones.find((i) => i.id === id);
-  const getAlumno = (id: string) => alumnos.find((a) => a.id === id);
+  const getInstitucion = (id: string | null) => instituciones.find((i) => i.id === id);
+  const getAlumno = (id: string | null) => alumnos.find((a) => a.id === id);
 
   const eventos: EventoCalendario[] = useMemo(() => {
     const eventosMesas: EventoCalendario[] = mesas

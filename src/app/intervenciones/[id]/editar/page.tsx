@@ -9,7 +9,7 @@ export default async function EditarIntervencionPage({ params }: { params: Promi
   if (!intervencion) notFound();
 
   const [alumno, alumnos, instituciones] = await Promise.all([
-    getAlumno(intervencion.alumnoId),
+    intervencion.alumnoId ? getAlumno(intervencion.alumnoId) : Promise.resolve(undefined),
     listAlumnos(),
     listInstituciones(),
   ]);
