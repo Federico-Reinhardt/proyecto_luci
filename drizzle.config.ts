@@ -1,6 +1,10 @@
 import { defineConfig } from "drizzle-kit";
 
-process.loadEnvFile(".env.local");
+try {
+  process.loadEnvFile(".env.local");
+} catch {
+  // .env.local no existe (p. ej. en el build de Vercel, donde las env vars ya están seteadas).
+}
 
 export default defineConfig({
   out: "./drizzle",
