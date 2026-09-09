@@ -62,7 +62,10 @@ export default async function IntervencionesPage() {
                     <td className="px-4 py-3 text-slate-600">{formatFecha(desarrollos[0].fecha)}</td>
                     <td className="px-4 py-3 text-right">
                       {a ? (
-                        <Link href={`/alumnos/${a.id}`} className="text-sm font-medium text-teal-600 hover:text-teal-700">
+                        <Link
+                          href={`/intervenciones/alumno/${a.id}`}
+                          className="text-sm font-medium text-teal-600 hover:text-teal-700"
+                        >
                           Ver intervenciones
                         </Link>
                       ) : (
@@ -84,7 +87,7 @@ export default async function IntervencionesPage() {
             {gruposOrdenados.map(({ alumno: a, intervenciones: desarrollos }) => (
               <Link
                 key={a?.id ?? SIN_ALUMNO}
-                href={a ? `/alumnos/${a.id}` : `/intervenciones/${desarrollos[0].id}`}
+                href={a ? `/intervenciones/alumno/${a.id}` : `/intervenciones/${desarrollos[0].id}`}
               >
                 <Card className="p-4">
                   <p className="font-medium text-slate-900">{a ? `${a.nombre} ${a.apellido}` : SIN_ALUMNO}</p>
