@@ -39,7 +39,7 @@ export default function CalendarioClient({
   instituciones: Institucion[];
   alumnos: Alumno[];
 }) {
-  const [cursor, setCursor] = useState(new Date(2026, 6, 1));
+  const [cursor, setCursor] = useState(new Date());
   const [pending, startTransition] = useTransition();
   const [togglingId, setTogglingId] = useState<string | null>(null);
   const [overrides, setOverrides] = useState<Record<string, boolean>>({});
@@ -93,7 +93,7 @@ export default function CalendarioClient({
   const hoy = toISODate(new Date());
   const prefijoMes = `${year}-${String(month + 1).padStart(2, "0")}`;
   const eventosDelMes = eventos
-    .filter((e) => e.fecha.startsWith(prefijoMes))
+    .filter((e) => e.fecha.startsWith(prefijoMes) && !e.hecho)
     .sort((a, b) => a.fecha.localeCompare(b.fecha));
 
   function cambiarMes(delta: number) {
